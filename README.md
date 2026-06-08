@@ -9,9 +9,6 @@
 
 <!-- Replace the badges above with your actual stack (e.g. SQL Server if you used T-SQL). Generate more at shields.io -->
 
-![Dashboard preview](images/dashboard_preview.png)
-*Interactive dashboard — [view it live on Tableau Public »](https://public.tableau.com/your-link-here)*
-
 ---
 
 ## Overview
