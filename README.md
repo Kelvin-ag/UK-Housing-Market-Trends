@@ -10,7 +10,7 @@ to official earnings data, using a layered SQL pipeline and visualised in Tablea
 ![Tableau](https://img.shields.io/badge/Tableau-Public-E97627)
 ![Licence](https://img.shields.io/badge/Data-OGL%20v3.0-green)
 
-![Dashboard preview]()
+![Dashboard preview](https://github.com/Kelvin-ag/UK-Housing-Market-Trends/blob/main/img/Screenshot%202026-06-14%20at%2021.41.34.png)
 ---
 
 ## Headline findings
