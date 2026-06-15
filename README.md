@@ -1,127 +1,166 @@
-# UK Housing Affordability: A Decade of Regional Divergence (2015–2025)
+# UK Regional Housing Affordability, 2015–2025
 
-> Analysing 10+ years of HM Land Registry transactions and ONS earnings data to map where home ownership has moved furthest out of reach — and why.
+An end-to-end analysis of how housing affordability changed across the nine English
+regions over a decade, and whether the change was driven by **rising prices** or
+**stagnant earnings**. Built on 11.1 million individual property transactions joined
+to official earnings data, using a layered SQL pipeline and visualised in Tableau.
 
 ![SQL](https://img.shields.io/badge/SQL-MySQL-336791)
 ![Excel](https://img.shields.io/badge/Excel-Power%20Query-217346)
 ![Tableau](https://img.shields.io/badge/Tableau-Public-E97627)
 ![Licence](https://img.shields.io/badge/Data-OGL%20v3.0-green)
 
-<!-- Replace the badges above with your actual stack (e.g. SQL Server if you used T-SQL). Generate more at shields.io -->
+![Dashboard preview](/Users/kelvinagara/Desktop/Project Files/UK-Housing-Market-Trends/img/Screenshot 2026-06-14 at 21.41.34.png)
+---
+
+## Headline findings
+
+Affordability (median house price ÷ median gross annual earnings) **worsened in 7 of
+the 9 English regions** between 2015 and 2025. The driver was **prices, not stagnant
+earnings**. Earnings grew a healthy 35–46% across every region, but in most regions
+house prices grew faster still.
+
+| Region | Price change | Earnings change | Affordability ratio (2015 → 2025) | Change |
+|---|---|---|---|---|
+| East Midlands | +56.3% | +42.4% | 6.28 → 7.02 | **+0.74** |
+| East of England | +47.1% | +41.4% | 8.42 → 9.02 | +0.60 |
+| West Midlands | +54.2% | +44.3% | 6.27 → 6.80 | +0.53 |
+| South East | +40.5% | +37.7% | 9.13 → 9.58 | +0.45 |
+| North West | +55.2% | +45.6% | 5.55 → 5.92 | +0.37 |
+| Yorkshire & The Humber | +48.3% | +41.6% | 5.68 → 6.03 | +0.35 |
+| South West | +43.5% | +43.3% | 8.17 → 8.33 | +0.16 |
+| North East | +29.7% | +35.7% | 5.15 → 5.00 | −0.15 |
+| London | +32.0% | +40.8% | 11.05 → 10.61 | −0.44 |
+
+*Higher ratio = less affordable. A positive change means affordability worsened.*
+
+Three takeaways:
+
+1. **The Midlands were the affordability losers.** East Midlands, West Midlands and
+   East of England saw affordability deteriorate most, as prices ran 12–14 points ahead
+   of earnings growth.
+2. **Only London and the North East improved**, and for the same underlying reason in
+   reverse: in both, earnings grew faster than their comparatively slow price growth.
+3. **The cheaper regions had the hottest price growth.** The North West, East Midlands
+   and West Midlands (all sub-£165k in 2015) saw the largest price surges (+54–56%),
+   while London grew slowest (+32%), a partial price convergence, though absolute
+   levels remain far apart (London £528k vs North East £172k in 2025).
 
 ---
 
-## Overview
+## The question
 
-**The question:** Over the last decade, which parts of the UK have become the least affordable to buy in, and is the squeeze driven more by rising prices or by earnings failing to keep up?
+> *Which English regions became least affordable over 2015–2025, and was the change
+> driven by rising prices or by earnings failing to keep pace?*
 
-This project combines transaction-level sale prices with regional earnings to build a reproducible affordability picture across UK regions and local authorities. It demonstrates an end-to-end analytics workflow: sourcing official open data, loading and cleaning several million records in SQL, preparing reference data and validating results in Excel, and communicating insight through an interactive Tableau dashboard.
+A single affordability ratio answers "how affordable," but not "why." Decomposing the
+ratio into its price and earnings components per region is what turns a number into an
+explanation.
 
-## Key findings
-
-<!-- THIS IS THE MOST IMPORTANT SECTION. Replace with YOUR real numbers once analysis is done. Lead with the number. -->
-
-- 🔺 **[London / region] remained least affordable** at **[X.X]× median earnings** in 2025, vs a national figure of **[X.X]×**.
-- 📈 Median prices rose **[XX]%** over the decade while median earnings rose only **[XX]%**, widening the gap most in **[region]**.
-- 🗺️ The **North–South affordability divide narrowed/widened**: [one-sentence finding].
-- 🏘️ **[Property type / flats vs detached]** showed the sharpest change in **[area]**.
+---
 
 ## Live dashboard
 
-🔗 **[Explore the interactive Tableau dashboard »](https://public.tableau.com/your-link-here)**
+🔗 **[Explore the interactive Tableau dashboard »](https://public.tableau.com/app/profile/mozi.agara/viz/UKRegionalHousingAffordability2015to2025_/Dashboard1)**
 
 ## Data sources
 
-All data is official UK open data published under the Open Government Licence v3.0.
-
-| Source | What it provides | Granularity | Link |
+| Source | Used for | Notes | Link |
 |---|---|---|---|
-| HM Land Registry — Price Paid Data | Every residential sale in England & Wales, 1995–present | Transaction level | [gov.uk](https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads) |
-| UK House Price Index (HPI) | Modelled house price index & average prices | Region / local authority, monthly | [gov.uk](https://landregistry.data.gov.uk/app/ukhpi) |
-| ONS — House price to earnings ratio | Affordability ratios (price ÷ gross annual earnings) | Local authority, annual | [ons.gov.uk](https://www.ons.gov.uk/peoplepopulationandcommunity/housing/datasets/ratioofhousepricetoworkplacebasedearningslowerquartileandmedian) |
-| ONS — National Statistics Postcode Lookup (NSPL) | Maps postcodes to regions / local authorities | Postcode | [ONS Geoportal](https://geoportal.statistics.gov.uk/) |
+| HM Land Registry: Price Paid Data (2015–2025) | Every residential sale; basis for region-level median price | ~11.1M rows; England & Wales | [gov.uk](https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads) |
+| ONS: National Statistics Postcode Lookup (NSPL) | Maps each postcode to its E12 region code | Region field is England-only | [ONS Geoportal](https://geoportal.statistics.gov.uk/) |
+| ONS: House price to workplace-based earnings ratio (tables 1a/1b/1c) | Median earnings and the published affordability ratio | Region grain, 1997–2025 | [ons.gov.uk](https://www.ons.gov.uk/peoplepopulationandcommunity/housing/datasets/ratioofhousepricetoworkplacebasedearningslowerquartileandmedian) |
 
-> **Attribution:** Contains HM Land Registry data © Crown copyright and database right 2026. This data is licensed under the Open Government Licence v3.0. Contains public sector information from the Office for National Statistics licensed under the same.
+All sources are open data. Earnings (table 1b) is the dimension that **cannot** be
+derived from transaction data; it is what makes the prices-vs-earnings split possible.
 
-## Methodology
+---
 
-**Pipeline:** `raw CSVs → SQL (load, clean, aggregate) → Excel / Power Query (reference data + validation) → Tableau`
+## Method
 
-Key decisions (full SQL in `sql/`, Excel prep in `excel/`):
+A layered pipeline, each stage materialised so it can be inspected before the next is
+built (`raw → clean → flagged → summary → analysis`):
 
-**In SQL** (on the multi-million-row transaction data):
-- Loaded the headerless Land Registry yearly files via bulk load (`LOAD DATA INFILE`) and applied a defined schema with correct data types.
-- Restricted to **standard price-paid transactions** (PPD category `A`) to exclude repossessions and non-market sales, and dropped records flagged for deletion.
-- Removed null/invalid postcodes before any geographic aggregation.
-- Flagged (not silently deleted) extreme outliers — £0/£1 transfers and the top 0.1% of values, which are typically bulk or non-arm's-length sales.
-- Joined postcodes to regions and local authorities via the ONS NSPL lookup.
-- Aggregated using the **median, not the mean**, because house prices are heavily right-skewed — this matches the ONS methodology. (MySQL 8.0 has no median function, so it is computed with a `ROW_NUMBER()` / `COUNT()` window-function approach.)
+1. **Raw load.** All 11 years of Price Paid loaded into `pp_raw` (11,097,426 rows). A
+   `sale_year` column is derived from the transfer date via a `GENERATED ALWAYS AS …
+   STORED` column, then indexed.
+2. **Reference data.** NSPL loaded into `postcode_region` (postcode → E12 region,
+   filtered to the nine English regions). ONS price/earnings/ratio cleaned in Power
+   Query and loaded into `affordability_ref` (99 rows: 9 regions × 11 years).
+3. **Clean layer.** `pp_clean` joins region onto each sale and applies the scoping
+   decisions below. **11.1M → 8.9M rows.**
+4. **Outlier flagging.** `pp_flagged` adds an `is_outlier` flag using `PERCENT_RANK()`
+   *within each region-year*, marking the top and bottom 1% of prices (2.03% of rows).
+   Nothing is deleted; the flag lets analysis run on the clean core while keeping the
+   full distribution available.
+5. **Summary.** `housing_summary_region` computes the **median** price per region-year
+   (MySQL 8.0 has no `MEDIAN()`, so a `ROW_NUMBER()`/`COUNT()` window pattern is used),
+   collapsing 8.9M rows to 99.
+6. **Analysis views.** `v_region_analysis` joins price, earnings and ratio together;
+   `v_region_index` rebases every series to **2015 = 100** so regions of very different
+   absolute scale (London vs North East) become directly comparable on one chart.
 
-**In Excel (Power Query):**
-- Cleaned the ONS affordability and NSPL downloads — removed header/footer junk, unpivoted wide year columns into tidy long format, standardised local-authority names for clean joins.
-- Built a PivotTable workbook to independently validate the SQL median aggregates against a sample.
+### Key analytical decisions
+
+- **England, nine regions only.** Welsh postcodes map to a placeholder region code in
+  the NSPL, so Wales is out of scope; this keeps the postcode→region join and the ONS
+  region join on a single consistent key.
+- **Homes only** (`property_type <> 'O'`): excludes offices, car parks and land.
+- **Standard market sales only** (`ppd_category = 'A'`): excludes repossessions and
+  bulk/non-market transfers, so medians reflect genuine market value.
+- **Median over mean.** Median is robust to the long upper tail of property prices; mean
+  is retained alongside it as a comparison (the mean vs median gap is itself a signal).
+- **Base-year indexing.** Raw price charts let London's scale visually flatten faster-
+  growing smaller regions; indexing to 2015 corrects this and reveals the true growth
+  rates.
+
+---
 
 ## Repository structure
 
 ```
-uk-housing-affordability/
-├── README.md
-├── LICENSE
-├── .gitignore                 # excludes large raw data files
-├── data/
-│   ├── raw/                   # downloaded source files (gitignored)
-│   └── processed/             # cleaned extracts exported for Tableau
+.
 ├── sql/
-│   ├── 01_create_tables.sql
-│   ├── 02_load_data.sql
-│   ├── 03_clean_transform.sql
-│   └── 04_analysis_queries.sql
-├── excel/
-│   ├── data_prep.xlsx         # Power Query ETL for reference data
-│   └── validation.xlsx        # PivotTable checks against SQL output
-├── tableau/
-│   └── dashboard_link.md      # link + notes on the published dashboard
-└── images/
-    └── dashboard_preview.png
+│   ├── 01_setup_and_raw_load.sql      # database, pp_raw, sale_year column, index
+│   ├── 02_load_postcode_region.sql    # NSPL load, filtered to E12 regions
+│   ├── 03_load_affordability.sql      # ONS 1a/1b/1c -> affordability_ref
+│   ├── 04_build_clean.sql             # pp_clean: region join + scoping filters
+│   ├── 05_flag_outliers.sql           # pp_flagged: PERCENT_RANK outlier flag
+│   ├── 06_summary_region.sql          # housing_summary_region: median per region-year
+│   ├── 07_analysis_views.sql          # v_region_analysis (price + earnings + ratio)
+│   └── 08_price_index.sql             # v_region_index: 2015=100 indexed series
+└── README.md
 ```
 
-## How to reproduce
+---
 
-```bash
-# 1. Download source data (instructions in data/raw/README.md)
-#    - Land Registry yearly files (2015 onward)
-#    - ONS affordability ratio dataset
-#    - ONS NSPL postcode lookup
+## Reproducing the analysis
 
-# 2. Create the schema and bulk-load the raw transactions
-mysql -u root -p housing < sql/01_create_tables.sql
-mysql -u root -p housing < sql/02_load_data.sql        # uses LOAD DATA INFILE
+1. **Download the sources** (links in [Data sources](#data-sources)) into a local
+   `data/` folder. Price Paid is published as annual CSVs (2015 split into two parts);
+   the NSPL ships as postcode-area CSVs.
+2. **Enable local file loading** in MySQL: `SET GLOBAL local_infile = 1;` and add
+   `OPT_LOCAL_INFILE=1` to the Workbench connection's *Advanced* options.
+3. **Run the SQL files in order.** The raw load and the clean/flag/summary builds are
+   heavy operations on large tables, so raise the Workbench read timeout (SQL Editor
+   preferences) to ~600s and let them complete server-side rather than re-running.
+4. **Clean the ONS workbook in Power Query.** For tables 1a/1b/1c: remove the title
+   row, promote headers, filter to `E12` region codes, keep `Code`/`Name`/`2015–2025`
+   (drops the trailing 5-Year Average), then unpivot the year columns to tidy format.
+5. **Connect Tableau** to the two analysis views (or to CSV exports of them, only 99
+   rows each) and build the indexed-trend and price-vs-earnings dashboards.
 
-# 3. Clean, transform and aggregate to medians by region/LA/year
-mysql -u root -p housing < sql/03_clean_transform.sql
-mysql -u root -p housing < sql/04_analysis_queries.sql
+---
 
-# 4. Prepare reference data and validate in Excel
-#    open excel/data_prep.xlsx   (Power Query: clean + unpivot ONS files)
-#    open excel/validation.xlsx  (PivotTables: spot-check SQL medians)
+## Results at a glance
 
-# 5. Build the dashboard
-#    connect Tableau to the database (or the processed extract) and publish to Tableau Public
-```
+- **11,097,426** transactions processed → **8,939,813** standard residential sales after
+  cleaning and scoping.
+- **9 regions × 11 years** of median price, median earnings and affordability ratio.
+- Region-level medians cross-checked against ONS published figures (agreement within
+  ~2%).
 
-> Note: the Land Registry single file is ~5 GB and is **not** committed to the repo. Use the yearly files (115–230 MB each) for a lighter setup; large files are excluded via `.gitignore`.
-
-## Tools & technologies
-
-`SQL` (MySQL — load, clean, aggregate) · `Excel` (Power Query ETL, PivotTable validation) · `Tableau Public` · `Git`
-
-## Limitations & next steps
-
-- Price Paid Data covers **England & Wales only**; Scotland and Northern Ireland use separate registers (a natural v2 extension via Registers of Scotland).
-- The two most recent months of Land Registry data are incomplete due to registration lag.
-- Affordability uses workplace-based earnings, which differ from residence-based earnings — both are available and could be compared.
-- **Next:** add a rental affordability layer using the ONS Price Index of Private Rents.
-
+---
 ## Licence
 
 Code in this repository is released under the MIT Licence. Data is © Crown copyright, used under the Open Government Licence v3.0.
